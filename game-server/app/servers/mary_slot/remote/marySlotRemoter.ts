@@ -1,4 +1,4 @@
-import {Application, RemoterClass, FrontendSession} from 'pinus';
+import {Application, RemoterClass, FrontendSession, BackendSession} from 'pinus';
 
 export default function (app: Application) {
     return new MarySlotRemoter(app);
@@ -9,7 +9,7 @@ declare global {
     interface UserRpc {
         mary_slot: {
             // 一次性定义一个类自动合并到UserRpc中
-            marySlotRemoter: RemoterClass<FrontendSession, MarySlotRemoter>;
+            marySlotRemoter: RemoterClass<FrontendSession | BackendSession, MarySlotRemoter>;
         };
     }
 }

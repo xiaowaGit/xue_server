@@ -1,4 +1,4 @@
-import {Application, RemoterClass, FrontendSession} from 'pinus';
+import {Application, RemoterClass, FrontendSession, BackendSession} from 'pinus';
 
 export default function (app: Application) {
     return new WebRemoter(app);
@@ -9,7 +9,7 @@ declare global {
     interface UserRpc {
         web_api: {
             // 一次性定义一个类自动合并到UserRpc中
-            webRemoter: RemoterClass<FrontendSession, WebRemoter>;
+            webRemoter: RemoterClass<FrontendSession | BackendSession, WebRemoter>;
         };
     }
 }
