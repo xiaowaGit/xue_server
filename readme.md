@@ -22,3 +22,6 @@ node app
 
 安装全局通道支持库
 npm install pinus-global-channel-status
+
+安装常用工具库
+npm install xmcommon
