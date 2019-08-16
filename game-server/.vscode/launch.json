@@ -7,8 +7,10 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "LaunchMaster",
+            "name": "Launch App",
             "program": "${workspaceFolder}\\dist\\app.js",
+            "autoAttachChildProcesses": true,
+            "cwd": "${workspaceFolder}\\dist",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]
