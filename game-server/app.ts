@@ -1,6 +1,16 @@
 import { pinus } from 'pinus';
 import { preload } from './preload';
 
+import { LogFilter } from './app/filters/log';
+
+var httpPlugin = require('pomelo-http-plugin');
+const componentsPath = httpPlugin.components
+httpPlugin.components = [require(componentsPath+'/http')]
+const eventsPath = httpPlugin.events
+httpPlugin.events = [require(eventsPath+'/http')]
+httpPlugin.name = 'pomelo-http-plugin'
+
+var path = require('path');
 /**
  *  替换全局Promise
  *  自动解析sourcemap
@@ -31,6 +41,24 @@ app.configure('production|development', 'gate', function () {
             connector: pinus.connectors.hybridconnector,
             // useProtobuf: true
         });
+});
+
+// app configuration
+app.configure('development', 'web_api', function() {
+	app.loadConfig('httpConfig', path.join(app.getBase(), 'config/http.json'));
+	app.use(httpPlugin,app.get('httpConfig').gamehttp);
+	// app.use(httpPlugin, {
+	// 	http: app.get('httpConfig').gamehttps,
+	// });
+
+    // httpPlugin.filter(new LogFilter());
+    httpPlugin.beforeFilter(function (req, res, next) {
+        console.log("xiaowa ======================== cccc before");
+        next();
+    });
+	httpPlugin.afterFilter(function(req, res) {
+		res.send(res.get('resp'));
+	});
 });
 
 // start app
