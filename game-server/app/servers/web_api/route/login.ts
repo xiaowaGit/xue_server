@@ -16,5 +16,17 @@ module.exports = function(app, http, plugin) {
 			res.set('resp', 'http success');
 			next();
 		});
+
+		http.post('/register', function(req, res, next) {
+			console.log(req.body);
+			res.set('resp', 'http success');
+			next();
+		});
+
+		http.post('/login', function(req, res, next) {
+			console.log(req.body);
+			res.set('resp', 'http success');
+			next();
+		});
 	}
 };

@@ -43,17 +43,14 @@ app.configure('production|development', 'gate', function () {
         });
 });
 
-// app configuration
-app.configure('development', 'web_api', function() {
+app.configure('production|development', 'web_api', function() {
 	app.loadConfig('httpConfig', path.join(app.getBase(), 'config/http.json'));
 	app.use(httpPlugin,app.get('httpConfig').gamehttp);
-	// app.use(httpPlugin, {
-	// 	http: app.get('httpConfig').gamehttps,
-	// });
+	// app.use(httpPlugin,app.get('httpConfig').gamehttps);
 
     // httpPlugin.filter(new LogFilter());
     httpPlugin.beforeFilter(function (req, res, next) {
-        console.log("xiaowa ======================== cccc before");
+        console.log("before start http:");
         next();
     });
 	httpPlugin.afterFilter(function(req, res) {
