@@ -25,3 +25,24 @@ npm install pinus-global-channel-status
 
 安装常用工具库
 npm install xmcommon
+
+
+安装TypeORM:
+
+npm install typeorm --save
+
+需要安装依赖模块 reflect-metadata :
+
+npm install reflect-metadata --save
+
+MySQL 或 MariaDB
+
+npm install mysql --save
+
+MongoDB
+
+npm install mongodb --save
+
+Redis
+
+npm install redis --save

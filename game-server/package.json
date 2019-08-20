@@ -14,11 +14,15 @@
         "@types/bluebird": "^3.5.19",
         "@types/node": "^8.5.2",
         "bluebird": "^3.5.1",
+        "mongodb": "^3.3.0",
+        "mysql": "^2.17.1",
         "pinus": "1.3.11",
         "pinus-global-channel-status": "^5.0.2",
         "pomelo-http-plugin": "0.0.25",
-        "reflect-metadata": "^0.1.10",
+        "redis": "^2.8.0",
+        "reflect-metadata": "^0.1.13",
         "source-map-support": "^0.5.0",
+        "typeorm": "^0.2.18",
         "xmcommon": "^0.1.2"
     },
     "devDependencies": {
