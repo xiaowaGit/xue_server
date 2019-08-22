@@ -1,0 +1,25 @@
+{
+   "type": "mongodb",
+   "host": "localhost",
+   "port": 27017,
+   "username": "",
+   "password": "",
+   "database": "xue_game",
+   "synchronize": true,
+   "logging": false,
+   "extra": {"useNewUrlParser": true,"useUnifiedTopology": false},
+   "entities": [
+      "app/entity/**/*.ts"
+   ],
+   "migrations": [
+      "app/migration/**/*.ts"
+   ],
+   "subscribers": [
+      "app/subscriber/**/*.ts"
+   ],
+   "cli": {
+      "entitiesDir": "app/entity",
+      "migrationsDir": "app/migration",
+      "subscribersDir": "app/subscriber"
+   }
+}

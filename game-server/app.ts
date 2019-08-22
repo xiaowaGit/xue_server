@@ -11,6 +11,7 @@ httpPlugin.events = [require(eventsPath+'/http')]
 httpPlugin.name = 'pomelo-http-plugin'
 
 var path = require('path');
+
 /**
  *  替换全局Promise
  *  自动解析sourcemap
@@ -57,6 +58,10 @@ app.configure('production|development', 'web_api', function() {
 		res.send(res.get('resp'));
 	});
 });
+
+
+// app.configure('production|development', 'web_api|admin_api|connector|mary_slot', function() {
+// });
 
 // start app
 app.start();
