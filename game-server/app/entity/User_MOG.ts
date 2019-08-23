@@ -1,18 +1,24 @@
 import {Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ObjectIdColumn} from "typeorm";
 
 @Entity()
-export class User_MG {
+export class User_MOG {
 
     @ObjectIdColumn()
     id: number;
 
     @Column()
-    firstName: string;
+    uid: number;
 
     @Column()
-    lastName: string;
+    name: string;
 
     @Column()
-    age: number;
+    sex: string; // 性别
+
+    @Column()
+    avatar: number; // 头像
+
+    @Column()
+    coin: number; // 金币(分)
 
 }

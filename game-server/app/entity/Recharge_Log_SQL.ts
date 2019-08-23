@@ -1,18 +1,17 @@
 import {Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ObjectIdColumn} from "typeorm";
 
 @Entity()
-export class User {
+export class Recharge_Log_SQL {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    firstName: string;
+    uid: number;
 
     @Column()
-    lastName: string;
+    add_coin: number; // 充值/扣款金额
 
     @Column()
-    age: number;
-
+    stamp: number;   // 时间
 }

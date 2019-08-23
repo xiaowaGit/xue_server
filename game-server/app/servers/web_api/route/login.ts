@@ -1,7 +1,11 @@
 'use strict';
 
-import {User_MG} from '../../../entity/User_MG';
+import {User_MOG} from '../../../entity/User_MOG';
 import { getConnection } from 'typeorm';
+import { Account_MOG } from '../../../entity/Account_MOG';
+
+import { utils } from 'xmcommon';
+import { get_random_int } from '../../../util/tool';
 
 module.exports = function(app, http, plugin) {
 
@@ -24,13 +28,39 @@ module.exports = function(app, http, plugin) {
 		});
 
 		http.post('/register',async function(req, res, next) {
-			console.log("req.body:",req.body);
-			let {account,password} = req.body;
-			const user = new User_MG();
-			user.firstName = account;
-			user.lastName = password;
-			user.age = 25;
+			// console.log("req.body:",req.body);
+			let {account,password,name,sex} = req.body;
+			async function new_account():Promise<Account_MOG> {
+				let uid:number = get_random_int(100000,999999);
+				// let accountRepository = xue_game.getRepository(Account_MOG);
+				// await accountRepository.findOne({uid});
+				let account_m = await xue_game.manager.findOne(Account_MOG,{uid});
+				if (account_m) return new_account();
+				account_m = await xue_game.manager.findOne(Account_MOG,{account});
+				if (account_m) return null;
+				const account_obj = new Account_MOG();
+				account_obj.account = account;
+				account_obj.password = password;
+				account_obj.uid = uid;
+				return account_obj as Account_MOG;
+			}
+			const account_m = await new_account();
+			if (account_m == null) {
+				res.set('resp', 'register fail, account already exists');
+				next();
+				return;
+			}
+			const user = new User_MOG();
+			user.name = name;
+			user.sex = sex;
+			user.avatar = 1;
+			user.uid = account_m.uid;
+			user.coin = 10000;
 			await xue_game.manager.save(user);
+			await xue_game.manager.save(account_m);
+
+			// let account_copy = await xue_game.manager.findOne(Account_MOG,{uid:user.uid});
+			// console.log("account_copy : ",account_copy);
 			res.set('resp', 'register success');
 			next();
 		});

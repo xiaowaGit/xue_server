@@ -3,8 +3,9 @@ import {events} from "pinus";
 
 import "reflect-metadata";
 import {createConnection, createConnections} from "typeorm";
-import {User} from "../../entity/User";
-import { User_MG } from "../../entity/User_MG";
+import {Recharge_Log_SQL} from "../../entity/Recharge_Log_SQL";
+import { User_MOG } from "../../entity/User_MOG";
+import { Account_MOG } from "../../entity/Account_MOG";
 
 export default function () {
     return new Lifecycle();
@@ -23,7 +24,8 @@ class Lifecycle implements ILifeCycle {
             password: '',
             database: 'xue_game',
             entities: [
-                User_MG,
+                User_MOG,
+                Account_MOG,
              ], // 用此连接的实体
             logging: true, // 开启所有数据库信息打印
             logger: 'advanced-console', // 高亮字体的打印信息
@@ -52,7 +54,7 @@ class Lifecycle implements ILifeCycle {
             password: '123456',
             database: 'xue_log',
             entities: [
-                User,
+                Recharge_Log_SQL,
              ], // 用此连接的实体
             synchronize: true,
             logging: true, // 开启所有数据库信息打印
@@ -67,7 +69,7 @@ class Lifecycle implements ILifeCycle {
                  port: 6379,
                  username: '',
                 //  password:'',
-                 db: 1, // 这个任君选择，0～15库都可以选
+                 db: 2, // 这个任君选择，0～15库都可以选
                }
             }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
           },
