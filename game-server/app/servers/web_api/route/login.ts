@@ -6,6 +6,7 @@ import { Account_MOG } from '../../../entity/Account_MOG';
 
 import { utils } from 'xmcommon';
 import { get_random_int } from '../../../util/tool';
+import { NewToken } from '../../../util/token';
 
 module.exports = function(app, http, plugin) {
 
@@ -35,7 +36,7 @@ module.exports = function(app, http, plugin) {
 				// let accountRepository = xue_game.getRepository(Account_MOG);
 				// await accountRepository.findOne({uid});
 				let account_m = await xue_game.manager.findOne(Account_MOG,{uid});
-				if (account_m) return new_account();
+				if (account_m) return await new_account();
 				account_m = await xue_game.manager.findOne(Account_MOG,{account});
 				if (account_m) return null;
 				const account_obj = new Account_MOG();
@@ -65,9 +66,18 @@ module.exports = function(app, http, plugin) {
 			next();
 		});
 
-		http.post('/login', function(req, res, next) {
-			console.log(req.body);
-			res.set('resp', 'http success');
+		http.post('/login',async function(req, res, next) {
+			console.log("req.body:",req.body);
+			let {account,password} = req.body;
+			let account_m = await xue_game.manager.findOne(Account_MOG,{account});
+			if (account_m == null) {
+				res.set('resp', JSON.stringify({code:403,data:"账号不存在."}));
+			}
+			if (account_m.password != password) {
+				res.set('resp', JSON.stringify({code:403,data:"密码不匹配."}));
+			}
+			let token:string = NewToken(account_m.uid,{name:null,avatar:null});
+			res.set('resp', JSON.stringify({code:0,data:{uid:account_m.uid,token}}));
 			next();
 		});
 	}
