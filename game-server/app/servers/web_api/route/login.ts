@@ -72,9 +72,13 @@ module.exports = function(app, http, plugin) {
 			let account_m = await xue_game.manager.findOne(Account_MOG,{account});
 			if (account_m == null) {
 				res.set('resp', JSON.stringify({code:403,data:"账号不存在."}));
+				next();
+				return;
 			}
 			if (account_m.password != password) {
 				res.set('resp', JSON.stringify({code:403,data:"密码不匹配."}));
+				next();
+				return;
 			}
 			let token:string = NewToken(account_m.uid,{name:null,avatar:null});
 			res.set('resp', JSON.stringify({code:0,data:{uid:account_m.uid,token}}));
