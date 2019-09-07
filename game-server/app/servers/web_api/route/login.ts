@@ -62,7 +62,7 @@ module.exports = function(app, http, plugin) {
 
 			// let account_copy = await xue_game.manager.findOne(Account_MOG,{uid:user.uid});
 			// console.log("account_copy : ",account_copy);
-			res.set('resp', 'register success');
+			res.set('resp', JSON.stringify({code:0,data:'register success'}));
 			next();
 		});
 
@@ -82,6 +82,22 @@ module.exports = function(app, http, plugin) {
 			}
 			let token:string = NewToken(account_m.uid,{name:null,avatar:null});
 			res.set('resp', JSON.stringify({code:0,data:{uid:account_m.uid,token}}));
+			next();
+		});
+
+		
+		http.post('/get_info',async function(req, res, next) {
+			console.log("req.body:",req.body);
+			let {uid} = req.body;
+			let user = await xue_game.manager.findOne(User_MOG,{uid});
+			if (user == null) {
+				res.set('resp', JSON.stringify({code:403,data:"玩家不存在."}));
+				next();
+				return;
+			}
+			res.set('resp', JSON.stringify({code:0,
+				data:{uid:user.uid,name:user.name,sex:user.sex,avatar:user.avatar,coin:user.coin}
+			}));
 			next();
 		});
 	}
