@@ -5,7 +5,7 @@ import { getConnection } from 'typeorm';
 import { Account_MOG } from '../../../entity/Account_MOG';
 
 import { utils } from 'xmcommon';
-import { get_random_int } from '../../../util/tool';
+import { get_random_int, s_http, is_enable_token } from '../../../util/tool';
 import { NewToken } from '../../../util/token';
 
 module.exports = function(app, http, plugin) {
@@ -16,16 +16,12 @@ module.exports = function(app, http, plugin) {
 	if (plugin.useSSL) {
 
 		http.get('/testHttps', function(req, res, next) {
-			// console.log(req.body);
-			res.set('resp', 'https success');
-			next();
+			return s_http(0,"https success",res);
 		});
 	} else {
 
 		http.get('/testHttp', function(req, res, next) {
-			// console.log(req.body);
-			res.set('resp', 'http success');
-			next();
+			return s_http(0,"http success",res);
 		});
 
 		http.post('/register',async function(req, res, next) {
@@ -47,9 +43,7 @@ module.exports = function(app, http, plugin) {
 			}
 			const account_m = await new_account();
 			if (account_m == null) {
-				res.set('resp', 'register fail, account already exists');
-				next();
-				return;
+				return s_http(403,'register fail, account already exists',res);
 			}
 			const user = new User_MOG();
 			user.name = name;
@@ -60,10 +54,7 @@ module.exports = function(app, http, plugin) {
 			await xue_game.manager.save(user);
 			await xue_game.manager.save(account_m);
 
-			// let account_copy = await xue_game.manager.findOne(Account_MOG,{uid:user.uid});
-			// console.log("account_copy : ",account_copy);
-			res.set('resp', JSON.stringify({code:0,data:'register success'}));
-			next();
+			return s_http(0,'register success',res);
 		});
 
 		http.post('/login',async function(req, res, next) {
@@ -71,34 +62,25 @@ module.exports = function(app, http, plugin) {
 			let {account,password} = req.body;
 			let account_m = await xue_game.manager.findOne(Account_MOG,{account});
 			if (account_m == null) {
-				res.set('resp', JSON.stringify({code:403,data:"账号不存在."}));
-				next();
-				return;
+				return s_http(403,'账号不存在.',res);
 			}
 			if (account_m.password != password) {
-				res.set('resp', JSON.stringify({code:403,data:"密码不匹配."}));
-				next();
-				return;
+				return s_http(404,'密码不匹配.',res);
 			}
 			let token:string = NewToken(account_m.uid,{name:null,avatar:null});
-			res.set('resp', JSON.stringify({code:0,data:{uid:account_m.uid,token}}));
-			next();
+			return s_http(0,{uid:account_m.uid,token},res);
 		});
 
 		
 		http.post('/get_info',async function(req, res, next) {
 			console.log("req.body:",req.body);
+			if (is_enable_token(req) == false) return s_http(402,'token校验不通过.',res);
 			let {uid} = req.body;
 			let user = await xue_game.manager.findOne(User_MOG,{uid});
 			if (user == null) {
-				res.set('resp', JSON.stringify({code:403,data:"玩家不存在."}));
-				next();
-				return;
+				return s_http(403,'玩家不存在.',res);
 			}
-			res.set('resp', JSON.stringify({code:0,
-				data:{uid:user.uid,name:user.name,sex:user.sex,avatar:user.avatar,coin:user.coin}
-			}));
-			next();
+			return s_http(0,{uid:user.uid,name:user.name,sex:user.sex,avatar:user.avatar,coin:user.coin},res);
 		});
 	}
 };

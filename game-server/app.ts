@@ -3,6 +3,7 @@ import { preload } from './preload';
 
 import { LogFilter } from './app/filters/log';
 import { VerifyToken } from './app/util/token';
+import { s_http } from './app/util/tool';
 
 var httpPlugin = require('pomelo-http-plugin');
 const componentsPath = httpPlugin.components
@@ -51,23 +52,23 @@ app.configure('production|development', 'web_api', function() {
 	// app.use(httpPlugin,app.get('httpConfig').gamehttps);
 
     // httpPlugin.filter(new LogFilter());
-    let filters = ["/register","/login"];
-    httpPlugin.beforeFilter(function (req, res, next) {
-        console.log("before start http: req.path:",req.path);
-        if (filters.indexOf(req.path) != -1) {
-            return next();
-        }else{
-            let {uid,token} = req.body;
-            let {ok} = VerifyToken(uid, token);
-            if (ok == false) {
-                return res.send(JSON.stringify({code:403,data:"token验证不通过"}));
-            }
-            return next();
-        }
-    });
-	httpPlugin.afterFilter(function(req, res) {
-		res.send(res.get('resp'));
-	});
+    // let filters = ["/register","/login"];
+    // httpPlugin.beforeFilter(function (req, res, next) {
+    //     console.log("before start http: req.path:",req.path);
+    //     if (filters.indexOf(req.path) != -1) {
+    //         return next();
+    //     }else{
+    //         let {uid,token} = req.body;
+    //         let {ok} = VerifyToken(uid, token);
+    //         if (ok == false) {
+    //             return s_http(403,"token验证不通过",res);
+    //         }
+    //         return next();
+    //     }
+    // });
+	// httpPlugin.afterFilter(function(req, res) {
+	// 	// res.send(res.get('resp'));
+	// });
 });
 
 
