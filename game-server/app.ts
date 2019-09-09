@@ -5,6 +5,8 @@ import { LogFilter } from './app/filters/log';
 import { VerifyToken } from './app/util/token';
 import { s_http } from './app/util/tool';
 
+import {createGlobalChannelStatusPlugin} from 'pinus-global-channel-status';
+
 var httpPlugin = require('pomelo-http-plugin');
 const componentsPath = httpPlugin.components
 httpPlugin.components = [require(componentsPath+'/http')]
@@ -36,6 +38,17 @@ app.configure('production|development', 'connector', function () {
             useDict: true,
             useProtobuf: true
         });
+    
+    app.use(createGlobalChannelStatusPlugin(),{
+        family   : 4,           // 4 (IPv4) or 6 (IPv6)
+        options  : {},
+        host     : '127.0.0.1',
+        password : null,
+        port     : 6379,
+        db       : 9,      // optinal, from 0 to 15 with default redis configure
+        // optional
+        cleanOnStartUp:app.getServerType() == 'connector',
+    });
 });
 
 app.configure('production|development', 'gate', function () {
@@ -72,8 +85,20 @@ app.configure('production|development', 'web_api', function() {
 });
 
 
-// app.configure('production|development', 'web_api|admin_api|connector|mary_slot', function() {
-// });
+app.configure('production|development', 'web_api|admin_api|mary_slot', function() {
+    
+    app.use(createGlobalChannelStatusPlugin(),{
+        family   : 4,           // 4 (IPv4) or 6 (IPv6)
+        options  : {},
+        host     : '127.0.0.1',
+        password : null,
+        port     : 6379,
+        db       : 9,      // optinal, from 0 to 15 with default redis configure
+        // optional
+        cleanOnStartUp:app.getServerType() == 'connector',
+    });
+
+});
 
 // start app
 app.start();

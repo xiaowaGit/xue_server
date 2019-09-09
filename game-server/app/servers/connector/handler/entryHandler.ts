@@ -1,10 +1,13 @@
 import { Application, FrontendSession } from 'pinus';
+import { is_enable_token } from '../../../util/tool';
+import { GlobalChannelServiceStatus } from 'pinus-global-channel-status';
 
 export default function (app: Application) {
     return new Handler(app);
 }
 
 export class Handler {
+
     constructor(private app: Application) {
 
     }
@@ -14,43 +17,52 @@ export class Handler {
      *
      * @param  {Object}   msg     request message
      * @param  {Object}   session current session object
-     * @param  {Function} next    next step callback
      * @return {Void}
      */
-    async entry(msg: any, session: FrontendSession) {
-        return { code: 200, msg: 'game server is ok.' };
-    }
+    async entry(msg: {uid:number,token:string}, session: FrontendSession) {
+        
+        let self = this;
+        let uid:string = "" + msg.uid;
+        let sessionService = self.app.get('sessionService');
 
-    /**
-     * Publish route for mqtt connector.
-     *
-     * @param  {Object}   msg     request message
-     * @param  {Object}   session current session object
-     * @param  {Function} next    next step callback
-     * @return {Void}
-     */
-    async publish(msg: any, session: FrontendSession) {
-        let result = {
-            topic: 'publish',
-            payload: JSON.stringify({ code: 200, msg: 'publish message is ok.' })
-        };
-        return result;
-    }
+        if (is_enable_token(msg) == false) {
+            return {
+                code: 501,
+                error: true
+            };
+        }
+        // duplicate log in
+        if (!!sessionService.getByUid(uid)) {
+            return {
+                code: 500,
+                error: true
+            };
+        }
 
+        await session.abind(uid);
+
+        const globalChannelStatus: GlobalChannelServiceStatus = this.app.get(GlobalChannelServiceStatus.PLUGIN_NAME);
+        globalChannelStatus.addStatus(session.uid, this.app.getServerId());
+        session.on('closed', this.onUserLeave.bind(this));
+
+        return {code:0};
+    }
+    
     /**
-     * Subscribe route for mqtt connector.
+     * User log out handler
      *
-     * @param  {Object}   msg     request message
-     * @param  {Object}   session current session object
-     * @param  {Function} next    next step callback
-     * @return {Void}
+     * @param {Object} app current application
+     * @param {Object} session current session object
+     *
      */
-    async subscribe(msg: any, session: FrontendSession) {
-        let result = {
-            topic: 'subscribe',
-            payload: JSON.stringify({ code: 200, msg: 'subscribe message is ok.' })
-        };
-        return result;
+    onUserLeave(session: FrontendSession) {
+        if (!session || !session.uid) {
+            return;
+        }
+        const globalChannelStatus: GlobalChannelServiceStatus = this.app.get(GlobalChannelServiceStatus.PLUGIN_NAME);
+        globalChannelStatus.leaveStatus(session.uid, this.app.getServerId());
+
+        /// 通知 所在游戏服务 踢出这人TODO:
     }
 
 }
