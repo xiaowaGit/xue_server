@@ -1,6 +1,7 @@
 import { Application, FrontendSession } from 'pinus';
 import { is_enable_token } from '../../../util/tool';
 import { GlobalChannelServiceStatus } from 'pinus-global-channel-status';
+import { GAME_TYPE } from '../../../util/enum';
 
 export default function (app: Application) {
     return new Handler(app);
@@ -55,14 +56,33 @@ export class Handler {
      * @param {Object} session current session object
      *
      */
-    onUserLeave(session: FrontendSession) {
+    async onUserLeave(session: FrontendSession) {
         if (!session || !session.uid) {
             return;
         }
         const globalChannelStatus: GlobalChannelServiceStatus = this.app.get(GlobalChannelServiceStatus.PLUGIN_NAME);
-        globalChannelStatus.leaveStatus(session.uid, this.app.getServerId());
-
         /// 通知 所在游戏服务 踢出这人TODO:
+        let members = await globalChannelStatus.getMembersByChannelName(this.app.getServerId(),GAME_TYPE.MARY_SLOT);
+        /**
+         * { connector_1:{ channelName1: [ 'uuid_21', 'uuid_12', 'uuid_24', 'uuid_27' ] },
+      								connector_2: { channelName1: [ 'uuid_15', 'uuid_9', 'uuid_0', 'uuid_18' ] },
+      								connector_3: { channelName1: [ 'uuid_6', 'uuid_3' ] }
+         */
+        for (const server_id in members) {
+            if (members.hasOwnProperty(server_id)) {
+                const element = members[server_id];
+                for (const channel_name in element) {
+                    if (element.hasOwnProperty(channel_name)) {
+                        const uids = element[channel_name];
+                        if (uids.indexOf(session.uid) != -1) { ///// 通知游戏 该用户掉线
+                            
+                        }
+                    }
+                }
+            }
+        }
+        /// 下线
+        globalChannelStatus.leaveStatus(session.uid, this.app.getServerId());
     }
 
 }
