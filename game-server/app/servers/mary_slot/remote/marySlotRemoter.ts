@@ -21,16 +21,12 @@ export class MarySlotRemoter {
     }
 
     /**
-     *
-     * @param username
-     * @param password
+     * 下线
+     * @param uid
      */
-    public async auth(username: string , password: string) {
+    public async outLine(uid:string) {
+        ////TODO:
         return true;
     }
 
-    // 私有方法不会加入到RPC提示里
-    private async privateMethod(testarg:string,arg2:number){
-
-    }
 }

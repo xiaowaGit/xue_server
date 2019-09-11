@@ -1,4 +1,4 @@
-import { Application, FrontendSession } from 'pinus';
+import { Application, FrontendSession, BackendSession } from 'pinus';
 
 export default function (app: Application) {
     return new marySlotHandler(app);
@@ -14,43 +14,22 @@ export class marySlotHandler {
      *
      * @param  {Object}   msg     request message
      * @param  {Object}   session current session object
-     * @param  {Function} next    next step callback
      * @return {Void}
      */
-    async entry(msg: any, session: FrontendSession) {
-        return { code: 200, msg: 'game server is ok.' };
+    async entry(msg: any, session: BackendSession) {
+        let uid:number = ~~session.uid;
+        
     }
 
     /**
-     * Publish route for mqtt connector.
+     * New client entry.
      *
      * @param  {Object}   msg     request message
      * @param  {Object}   session current session object
-     * @param  {Function} next    next step callback
      * @return {Void}
      */
-    async publish(msg: any, session: FrontendSession) {
-        let result = {
-            topic: 'publish',
-            payload: JSON.stringify({ code: 200, msg: 'publish message is ok.' })
-        };
-        return result;
-    }
+    async leave(msg: any, session: BackendSession) {
+        let uid:number = ~~session.uid;
 
-    /**
-     * Subscribe route for mqtt connector.
-     *
-     * @param  {Object}   msg     request message
-     * @param  {Object}   session current session object
-     * @param  {Function} next    next step callback
-     * @return {Void}
-     */
-    async subscribe(msg: any, session: FrontendSession) {
-        let result = {
-            topic: 'subscribe',
-            payload: JSON.stringify({ code: 200, msg: 'subscribe message is ok.' })
-        };
-        return result;
     }
-
 }
