@@ -76,9 +76,11 @@ class Lifecycle implements ILifeCycle {
             // }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
           },
         ]).then(async connections => {
-            var client = redis.createClient('6379', '127.0.0.1');
-            global["REDIS"] = client;
-            next();
+          var client = redis.createClient('6379', '127.0.0.1');
+          client.on('connect', function () {
+              global["REDIS"] = client;
+              next();
+          });
         }).catch(error => console.log(error));
     }
 

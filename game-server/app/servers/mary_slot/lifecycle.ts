@@ -8,6 +8,7 @@ import { User_MOG } from "../../entity/User_MOG";
 import { Account_MOG } from "../../entity/Account_MOG";
 
 var redis = require('redis');
+var path = require('path');
 
 export default function () {
     return new Lifecycle();
@@ -77,13 +78,19 @@ class Lifecycle implements ILifeCycle {
           },
         ]).then(async connections => {
             var client = redis.createClient('6379', '127.0.0.1');
-            global["REDIS"] = client;
-            next();
+            client.on('connect', function () {
+                global["REDIS"] = client;
+                next();
+            });
         }).catch(error => console.log(error));
     }
 
     afterStartAll(app:Application):void {
         console.log("------------------初始化web_api-------------------");
+	    app.loadConfig('HappyFruit_1', path.join(app.getBase(), 'config/mary_slot/HappyFruit_1.json'));
+	    app.loadConfig('HappyFruit_2', path.join(app.getBase(), 'config/mary_slot/HappyFruit_2.json'));
+	    app.loadConfig('HappyFruit_3', path.join(app.getBase(), 'config/mary_slot/HappyFruit_3.json'));
+	    app.loadConfig('HappyFruit_4', path.join(app.getBase(), 'config/mary_slot/HappyFruit_4.json'));
     }
 
     beforeShutdown(app:Application):void {
