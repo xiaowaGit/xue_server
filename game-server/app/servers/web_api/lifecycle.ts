@@ -44,7 +44,7 @@ class Lifecycle implements ILifeCycle {
                  port: 6379,
                  username: '',
                 //  password:'',
-                 db: 1, // 这个任君选择，0～15库都可以选
+                 db: 0, // 这个任君选择，0～15库都可以选
                }
             }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
           },{
@@ -71,7 +71,7 @@ class Lifecycle implements ILifeCycle {
                  port: 6379,
                  username: '',
                 //  password:'',
-                 db: 2, // 这个任君选择，0～15库都可以选
+                 db: 1, // 这个任君选择，0～15库都可以选
                }
             }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
           },
