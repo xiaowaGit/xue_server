@@ -37,16 +37,16 @@ class Lifecycle implements ILifeCycle {
               useUnifiedTopology: true,
               useCreateIndex: true,
             },
-            cache: {
-              type: 'redis',
-              options: {
-                 host: 'localhost',
-                 port: 6379,
-                 username: '',
-                //  password:'',
-                 db: 0, // 这个任君选择，0～15库都可以选
-               }
-            }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
+            // cache: {
+            //   type: 'redis',
+            //   options: {
+            //      host: 'localhost',
+            //      port: 6379,
+            //      username: '',
+            //     //  password:'',
+            //      db: 0, // 这个任君选择，0～15库都可以选
+            //    }
+            // }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
           },{
             name: 'xue_log', // 给这个连接起个名字，如果是用户库，则可以起名 account
             type: 'mysql',
@@ -64,16 +64,16 @@ class Lifecycle implements ILifeCycle {
             extra: {
               connectionLimit:  10, // 连接池最大连接数量, 查阅资料 建议是  core number  * 2 + n 
             },
-            cache: {
-              type: 'redis',
-              options: {
-                 host: 'localhost',
-                 port: 6379,
-                 username: '',
-                //  password:'',
-                 db: 1, // 这个任君选择，0～15库都可以选
-               }
-            }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
+            // cache: {
+            //   type: 'redis',
+            //   options: {
+            //      host: 'localhost',
+            //      port: 6379,
+            //      username: '',
+            //     //  password:'',
+            //      db: 1, // 这个任君选择，0～15库都可以选
+            //    }
+            // }, // 如果对cache没有需求，设置`cache:false`或者干脆不填此个参数也是可以的
           },
         ]).then(async connections => {
             var client = redis.createClient('6379', '127.0.0.1');
