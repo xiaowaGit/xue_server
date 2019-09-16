@@ -80,6 +80,41 @@ class Lifecycle implements ILifeCycle {
             var client = redis.createClient('6379', '127.0.0.1');
             client.on('connect', function () {
                 global["REDIS"] = client;
+                global['REDIS_ON'] = client.on.bind(client);
+
+                global['REDIS_DEL'] = client.del.bind(client);
+                global['REDIS_GET'] = client.get.bind(client);
+                global['REDIS_DECR'] = client.decr.bind(client);
+                global['REDIS_DECRBY'] = client.decrby.bind(client);
+                global['REDIS_INCR'] = client.incr.bind(client);
+                global['REDIS_INCRBY'] = client.incrby.bind(client);
+                global['REDIS_INCRBYFLOAT'] = client.incrbyfloat.bind(client);
+                global['REDIS_MGET'] = client.mget.bind(client);
+                global['REDIS_MSET'] = client.mset.bind(client);
+                global['REDIS_MSETNX'] = client.msetnx.bind(client);
+                global['REDIS_PSETEX'] = client.psetex.bind(client);
+                global['REDIS_SET'] = client.set.bind(client);
+                global['REDIS_SETEX'] = client.setex.bind(client);
+                global['REDIS_SETNX'] = client.setnx.bind(client);
+                global['REDIS_SETRANGE'] = client.setrange.bind(client);
+                global['REDIS_STRLEN'] = client.strlen.bind(client);
+
+                global['REDIS_HDEL'] = client.hdel.bind(client);
+                global['REDIS_HEXISTS'] = client.hexists.bind(client);
+                global['REDIS_HGET'] = client.hget.bind(client);
+                global['REDIS_HGETALL'] = client.hgetall.bind(client);
+                global['REDIS_HINCRBY'] = client.hincrby.bind(client);
+                global['REDIS_HINCRBYFLOAT'] = client.hincrbybyfloat.bind(client);
+                global['REDIS_HKEYS'] = client.hkeys.bind(client);
+                global['REDIS_HLEN'] = client.hlen.bind(client);
+                global['REDIS_HMGET'] = client.hmget.bind(client);
+                global['REDIS_HMSET'] = client.hmset.bind(client);
+                global['REDIS_HSCAN'] = client.hscan.bind(client);
+                global['REDIS_HSET'] = client.hset.bind(client);
+                global['REDIS_HSETNX'] = client.hsetnx.bind(client);
+                global['REDIS_HSTRLEN'] = client.hstrlen.bind(client);
+                global['REDIS_HVALS'] = client.hvals.bind(client);
+                
                 next();
             });
         }).catch(error => console.log(error));
