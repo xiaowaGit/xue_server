@@ -50,7 +50,13 @@ function map_make(data:[number[],number[],number[],number[],number[]]) {
     return ret;
 }
 
-
+/**
+ * 检查中奖情况
+ * @param ret 
+ */
+function check_make_ret(ret:[number[],number[],number[],number[],number[]]) {
+    
+}
 
 
 
