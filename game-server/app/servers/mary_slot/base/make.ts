@@ -1,3 +1,4 @@
+import { MarySlotConfig } from "./table";
 
 //水果 代号
 enum Image {
@@ -50,3 +51,16 @@ function map_make(data:[number[],number[],number[],number[],number[]]) {
 }
 
 
+
+
+
+
+
+
+
+/**
+ * 生成水果机奖励
+ */
+export function make_slot_reward(room_pool:number,room_config:MarySlotConfig) {
+
+}
