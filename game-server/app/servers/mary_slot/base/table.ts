@@ -83,7 +83,7 @@ export class Mary_Slot_Table {
     /**
      *  下注摇奖
      */
-    async put_bet() {
+    async put_bet(bet:number) {
         let REDIS_HGET = global['REDIS_HGET'];
         let room_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'room_pool');
         if(room_pool[0] != null) return {code:403};
