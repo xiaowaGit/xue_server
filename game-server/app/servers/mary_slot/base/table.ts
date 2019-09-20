@@ -54,6 +54,7 @@ export class Mary_Slot_Table {
     private table_id:number = null;
     private null_reward_num: number;
     private small_game_num: number;
+    private free_game_num: number;
 
     public static createTable(app: Application,room_index:number) {
         return new Mary_Slot_Table(app,room_index);
@@ -68,6 +69,7 @@ export class Mary_Slot_Table {
         Mary_Slot_Table.ROOM_LIST[this.table_id] = this;
         this.null_reward_num = 0; // 连续空奖次数
         this.small_game_num = 0; // 小游戏剩余次数
+        this.free_game_num = 0; // 免费转次数
         this.init_pool();
     }
 
