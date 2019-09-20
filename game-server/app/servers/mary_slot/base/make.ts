@@ -19,7 +19,7 @@ enum Image {
 
 // 水果倍数
 let Image_Multiple = [
-    [],
+    [0,0,0,0,0,0],
     [0,0,1,3,10,75],  // 香蕉 倍数
     [0,0,0,3,10,85],  // 西瓜 倍数
     [0,0,0,15,40,250],  // 芒果 倍数
@@ -118,12 +118,15 @@ function check_line_element(ret:DataRet,line:Line):number {
     for (let index = 0; index < 5; index++) {
         const pot = line[index];
         let element = ret[pot[0]][pot[1]];
-        if(element == Image.Image_Wild) {
+        if(element == Image.Image_Wild && element_type != Image.Image_Bonus && element_type != Image.Image_Seven) {
             num ++;
+        }else if(element == Image.Image_Wild && (element_type == Image.Image_Bonus || element_type == Image.Image_Seven)) {
+            break;
         }else if (element != element_type && element_type != Image.Image_Null) {
             break;
         }else if (element != element_type && element_type == Image.Image_Null) {
             element_type = element;
+            if (element_type == Image.Image_Bonus || element_type == Image.Image_Seven)num = 0;
         }else if (element == element_type) {
             num ++;
         }
@@ -187,12 +190,84 @@ function check_line_multiple(ret:DataRet):number[] {
 }
 
 /**
+ * 检查列上是否有该元素
+ * @param row 
+ */
+function check_row_find_element(row:number[],element_type:Image):boolean {
+    for (let index = 0; index < row.length; index++) {
+        const element = row[index];
+        if (element == element_type) return true;
+    }
+    return false;
+}
+
+/**
+ * 检查bonus
+ * @param ret 
+ * @returns {*} 返回 免费游戏 次数
+ */
+function check_bonus(ret:DataRet):number {
+    let row_sign:number[] = [0,0,0,0,0];
+    row_sign[0] = check_row_find_element(ret[0],Image.Image_Bonus) ? 1 : 0;
+    row_sign[1] = check_row_find_element(ret[1],Image.Image_Bonus) ? 1 : 0;
+    row_sign[2] = check_row_find_element(ret[2],Image.Image_Bonus) ? 1 : 0;
+    row_sign[3] = check_row_find_element(ret[3],Image.Image_Bonus) ? 1 : 0;
+    row_sign[4] = check_row_find_element(ret[4],Image.Image_Bonus) ? 1 : 0;
+    let num:number = 0;
+    let e_num:number = 0;
+    for (let index = 0; index < 5; index++) {
+        let e = row_sign[index];
+        if (e == 1) {
+            num ++;
+        }else if (e != 1 && num != 0) {
+            e_num = Math.max(num,e_num);
+            num = 0;
+        }
+    }
+    e_num = Math.max(num,e_num);
+
+    let bouns_reward:number[] = [0,0,0,10,15,20];
+    return bouns_reward[e_num];
+}
+
+
+/**
+ * 检查wild
+ * @param ret 
+ * @returns {*} 返回 小玛丽游戏 次数
+ */
+function check_scatter(ret:DataRet):number {
+    let pool_multiple = 0;
+    let scatter_arr = [];
+    for (let index = 0; index < line_gather.length; index++) {
+        const line:Line = line_gather[index];
+        let num:number = check_line_continuity(ret,line,Image.Image_Seven);
+        scatter_arr.push(num);
+    }
+    let scatter_num:number = Math.max(...scatter_arr);
+    let pool_reward:number[] = [0,0,0,5,10,20];
+    pool_multiple = pool_reward[scatter_num];
+    return pool_multiple;
+}
+
+/**
  * 检查中奖情况
  * @param ret 
  */
 function check_make_ret(ret:[number[],number[],number[],number[],number[]]) {
     let small_game_num:number = check_wild(ret);
     let line_multiple:number[] = check_line_multiple(ret);
+    let free_game_num:number = check_bonus(ret);
+    let pool_multiple:number = check_scatter(ret);
+    let is_reward = false;
+    if (small_game_num != 0) is_reward = true;
+    if (free_game_num != 0) is_reward = true;
+    if (pool_multiple != 0) is_reward = true;
+    for (let index = 0; index < line_multiple.length; index++) {
+        const element = line_multiple[index];
+        if (element != 0) is_reward = true;
+    }
+    return {small_game_num,line_multiple,free_game_num,pool_multiple,is_reward};
 }
 
 
