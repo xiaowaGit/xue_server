@@ -170,12 +170,29 @@ function check_wild(ret:DataRet):number {
     }
     return small_game_num;
 }
+
+/**
+ * 检查line 
+ * @param ret 
+ * @returns {*} 返回 line 倍数
+ */
+function check_line_multiple(ret:DataRet):number[] {
+    let line_multiple:number[] = [];
+    for (let index = 0; index < line_gather.length; index++) {
+        const line:Line = line_gather[index];
+        let multiple:number = check_line_element(ret,line);
+        line_multiple.push(multiple);
+    }
+    return line_multiple;
+}
+
 /**
  * 检查中奖情况
  * @param ret 
  */
 function check_make_ret(ret:[number[],number[],number[],number[],number[]]) {
     let small_game_num:number = check_wild(ret);
+    let line_multiple:number[] = check_line_multiple(ret);
 }
 
 
