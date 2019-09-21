@@ -1,4 +1,4 @@
-import { MarySlotConfig } from "./table";
+import { MarySlotConfig, MarySlotSet } from "./table";
 
 //水果 代号
 enum Image {
@@ -54,6 +54,17 @@ export interface DataRet {
     [index:number]:number[];
 }
 
+export interface Ret {
+    ret: [number[], number[], number[], number[], number[]];
+    small_game_num: number;
+    line_multiple: number[];
+    free_game_num: number;
+    pool_multiple: number;
+    is_reward: boolean;
+    line_reward: number;
+    pool_reward: number;
+    total_reward: number;
+}
 
 /// 线集合
 let line_gather = [
@@ -275,7 +286,8 @@ function check_make_ret(ret:[number[],number[],number[],number[],number[]],hands
     }
     let pool_reward:number = pool_multiple * handsel_pool;
     let total_reward:number = line_reward + pool_reward;
-    return {small_game_num,line_multiple,free_game_num,pool_multiple,is_reward,line_reward,pool_reward,total_reward};
+    let _ret:Ret = {ret,small_game_num,line_multiple,free_game_num,pool_multiple,is_reward,line_reward,pool_reward,total_reward};
+    return _ret;
 }
 
 
@@ -301,5 +313,31 @@ export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:nu
     }
 
     let control = room_config.ControlLevel[control_level];
+    let set_id:number = 2;
+    if (Math.random() * 100 < control[1]) set_id = control[0];
 
+    let set_info:MarySlotSet = room_config["Set_" + set_id];
+    let JackPot_Reward:number[] = set_info.JackPot.Reward;
+    let data_input:DataInput = set_info.Normal;
+    if (is_free) data_input = set_info.Free;
+
+    let probability:number = null_reward_num >= control[2].length ? control[2][control[2].length-1] : control[2][null_reward_num];
+    let is_reward:boolean = false;
+    if (Math.random() * 100 < probability) is_reward = true;
+
+    let big_reward_probability:number = control[3][0];
+    let big_reward_limit:number = control[3][1];
+
+    /// 随机函数 选择规则 待确认TODO:
+    let make:Function = row_make;
+
+    let small_reward:Ret = null;
+    for (let i = 0; i < 50; i++) {
+        let ret:[number[],number[],number[],number[],number[]] = make(data_input);
+        let out:Ret = check_make_ret(ret,handsel_pool,one_bet,JackPot_Reward);
+        if (small_reward == null) small_reward = out;
+        
+    }
 }
+
+
