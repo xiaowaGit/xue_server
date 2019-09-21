@@ -96,6 +96,9 @@ export class Mary_Slot_Table {
         let is_free:boolean = false;
         let one_bet:number = bet / 9;
         if (this.room_config.Bet.indexOf(one_bet) == -1) return {code:403,data:"压注格式错误."}
+
+        let REDIS_HGET = global['REDIS_HGET'];
+        let REDIS_HINCRBY = global['REDIS_HINCRBY'];
         if (this.free_game_num > 0) {
             this.free_game_num --;
             is_free = true;
@@ -103,12 +106,20 @@ export class Mary_Slot_Table {
         }else{
             is_free = false;
             this.user.coin -= bet;
+            let room_water:number = Math.ceil(bet * this.room_config.RoomRatio / 10000);
+            let handsel_water:number = Math.ceil(bet * this.room_config.HandselRatio / 10000);
+            let add_pool:number = bet - room_water - handsel_water;
+            await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'room_water', room_water);
+            await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'handsel_pool', handsel_water);
+            await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'room_pool', add_pool);
         }
-        let REDIS_HGET = global['REDIS_HGET'];
         let room_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'room_pool');
         if(room_pool[0] != null) return {code:404,data:"奖池读取错误."};
         room_pool = ~~room_pool[1] || 0;
-        let reward = make_slot_reward(room_pool,this.room_config);
+        let handsel_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'handsel_pool');
+        if(handsel_pool[0] != null) return {code:405,data:"奖池读取错误."};
+        handsel_pool = ~~handsel_pool[1] || 0;
+        let reward = make_slot_reward(room_pool,handsel_pool,one_bet,this.room_config,is_free,this.null_reward_num);
         ///_____ 结算中奖金额TODO:
         
         await this.xue_game.manager.save(this.user);

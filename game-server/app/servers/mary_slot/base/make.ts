@@ -232,11 +232,11 @@ function check_bonus(ret:DataRet):number {
 
 
 /**
- * 检查wild
+ * 检查777
  * @param ret 
- * @returns {*} 返回 小玛丽游戏 次数
+ * @returns {*} 返回 奖池比例
  */
-function check_scatter(ret:DataRet):number {
+function check_scatter(ret:DataRet,JackPot_Reward:number[]):number {
     let pool_multiple = 0;
     let scatter_arr = [];
     for (let index = 0; index < line_gather.length; index++) {
@@ -245,7 +245,7 @@ function check_scatter(ret:DataRet):number {
         scatter_arr.push(num);
     }
     let scatter_num:number = Math.max(...scatter_arr);
-    let pool_reward:number[] = [0,0,0,5,10,20];
+    let pool_reward:number[] = [0,0,0].concat(JackPot_Reward);
     pool_multiple = pool_reward[scatter_num];
     return pool_multiple;
 }
@@ -254,11 +254,11 @@ function check_scatter(ret:DataRet):number {
  * 检查中奖情况
  * @param ret 
  */
-function check_make_ret(ret:[number[],number[],number[],number[],number[]]) {
+function check_make_ret(ret:[number[],number[],number[],number[],number[]],handsel_pool:number,one_bet:number,JackPot_Reward:number[]) {
     let small_game_num:number = check_wild(ret);
     let line_multiple:number[] = check_line_multiple(ret);
     let free_game_num:number = check_bonus(ret);
-    let pool_multiple:number = check_scatter(ret);
+    let pool_multiple:number = check_scatter(ret,JackPot_Reward);
     let is_reward = false;
     if (small_game_num != 0) is_reward = true;
     if (free_game_num != 0) is_reward = true;
@@ -267,7 +267,15 @@ function check_make_ret(ret:[number[],number[],number[],number[],number[]]) {
         const element = line_multiple[index];
         if (element != 0) is_reward = true;
     }
-    return {small_game_num,line_multiple,free_game_num,pool_multiple,is_reward};
+    /// 计算 线奖励和大奖池奖励
+    let line_reward:number = 0;
+    for (let index = 0; index < line_multiple.length; index++) {
+        const element = line_multiple[index];
+        line_reward += one_bet * element;
+    }
+    let pool_reward:number = pool_multiple * handsel_pool;
+    let total_reward:number = line_reward + pool_reward;
+    return {small_game_num,line_multiple,free_game_num,pool_multiple,is_reward,line_reward,pool_reward,total_reward};
 }
 
 
@@ -279,6 +287,19 @@ function check_make_ret(ret:[number[],number[],number[],number[],number[]]) {
 /**
  * 生成水果机奖励
  */
-export function make_slot_reward(room_pool:number,room_config:MarySlotConfig) {
+export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:number,room_config:MarySlotConfig,is_free:boolean,null_reward_num:number) {
+
+    ////  取出控制等级
+    let control_level:string = '1';
+    let Level_Range:number[][] = room_config.RoomControl.Level_Range;
+    for (let index = 0; index < Level_Range.length; index++) {
+        const level:number[] = Level_Range[index];
+        if (room_pool >= level[1] && room_pool < level[2]) {
+            control_level = "" + level[0];
+            break;
+        }
+    }
+
+    let control = room_config.ControlLevel[control_level];
 
 }
