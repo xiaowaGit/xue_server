@@ -62,7 +62,7 @@ export class Handler {
         }
         const globalChannelStatus: GlobalChannelServiceStatus = this.app.get(GlobalChannelServiceStatus.PLUGIN_NAME);
         /// 通知 所在游戏服务 踢出这人TODO:
-        let members = await globalChannelStatus.getMembersByChannelName(this.app.getServerId(),GAME_TYPE.MARY_SLOT);
+        let members = await globalChannelStatus.getMembersByChannelName("connector",GAME_TYPE.MARY_SLOT);
         /**
          * { connector_1:{ channelName1: [ 'uuid_21', 'uuid_12', 'uuid_24', 'uuid_27' ] },
       								connector_2: { channelName1: [ 'uuid_15', 'uuid_9', 'uuid_0', 'uuid_18' ] },

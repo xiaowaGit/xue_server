@@ -3,6 +3,8 @@ import { make_slot_reward, Ret } from "./make";
 import { getConnection, Connection } from "typeorm";
 import { User_MOG } from "../../../entity/User_MOG";
 import { GlobalChannelServiceStatus } from "pinus-global-channel-status";
+import { GAME_TYPE } from "../../../util/enum";
+import { inGame } from "../../../util/tool";
 
 let xmcommon = require('xmcommon');
 let utils = xmcommon.utils;
@@ -50,7 +52,6 @@ export class Mary_Slot_Table {
     
     private static ROOM_LIST:Map<number,Mary_Slot_Table> = new Map<number,Mary_Slot_Table>();
     private static TABLE_ID:number = 0;
-    private static CHANNEL_NAME:string = "MARY_SLOT"; // 游戏通道
 
     private app: Application = null;
     private room_index:number = null;
@@ -154,10 +155,13 @@ export class Mary_Slot_Table {
         if (user == null) {
             return {code:403,data:'玩家不存在.'};
         }
+        if (inGame(""+uid,this.globalChannelStatus)) {
+            return {code:404,data:'你已经在其他游戏中，不能进入此游戏.'};
+        }
         this.user = user;
         let sids:string[] = await this.globalChannelStatus.getSidsByUid(""+uid);
         let sid:string = sids[0];
-        await this.globalChannelStatus.add(""+uid,sid,Mary_Slot_Table.CHANNEL_NAME);
+        await this.globalChannelStatus.add(""+uid,sid,GAME_TYPE.MARY_SLOT);
         return {code:0};
     }
 
@@ -172,7 +176,7 @@ export class Mary_Slot_Table {
             Mary_Slot_Table.ROOM_LIST.delete(this.table_id);
             let sids:string[] = await this.globalChannelStatus.getSidsByUid(""+uid);
             let sid:string = sids[0];
-            await this.globalChannelStatus.leave(""+uid,sid,Mary_Slot_Table.CHANNEL_NAME);
+            await this.globalChannelStatus.leave(""+uid,sid,GAME_TYPE.MARY_SLOT);
             return {code:0};
         }else{
             return {code:404,data:"你不在该房间中"};
