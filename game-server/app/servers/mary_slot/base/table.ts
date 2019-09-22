@@ -1,5 +1,5 @@
 import { Application } from "pinus";
-import { make_slot_reward } from "./make";
+import { make_slot_reward, Ret } from "./make";
 import { getConnection, Connection } from "typeorm";
 import { User_MOG } from "../../../entity/User_MOG";
 
@@ -119,10 +119,23 @@ export class Mary_Slot_Table {
         let handsel_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'handsel_pool');
         if(handsel_pool[0] != null) return {code:405,data:"奖池读取错误."};
         handsel_pool = ~~handsel_pool[1] || 0;
-        let reward = make_slot_reward(room_pool,handsel_pool,one_bet,this.room_config,is_free,this.null_reward_num);
+        let reward:Ret = make_slot_reward(room_pool,handsel_pool,one_bet,this.room_config,is_free,this.null_reward_num);
         ///_____ 结算中奖金额TODO:
-        
+        if (reward.is_reward) {
+            this.null_reward_num = 0;
+        }else{
+            this.null_reward_num ++;
+        }
+        this.small_game_num += reward.small_game_num;
+        this.free_game_num += reward.free_game_num;
+        this.user.coin += reward.total_reward;
+        await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'handsel_pool', -1*reward.pool_reward);
+        await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'room_pool', -1*reward.line_reward);
         await this.xue_game.manager.save(this.user);
+
+        ///// 发送给 客户端 综合数据
+        reward.small_game_num = this.small_game_num;
+        reward.free_game_num = this.free_game_num;
         return reward;
     }
 

@@ -295,6 +295,9 @@ function check_make_ret(ret:[number[],number[],number[],number[],number[]],hands
 
 
 
+function sum(arr) {
+    return eval(arr.join("+"));
+};
 
 /**
  * 生成水果机奖励
@@ -335,9 +338,14 @@ export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:nu
     for (let i = 0; i < 50; i++) {
         let ret:[number[],number[],number[],number[],number[]] = make(data_input);
         let out:Ret = check_make_ret(ret,handsel_pool,one_bet,JackPot_Reward);
-        if (small_reward == null) small_reward = out;
-        
+        if (small_reward == null || small_reward.total_reward > out.total_reward) small_reward = out;
+        if (is_reward && out.is_reward == false) continue;
+        if (sum(out.line_multiple) > big_reward_limit) {
+            if (Math.random() * 100 < big_reward_probability) continue;
+        }
+        return out;
     }
+    return small_reward;
 }
 
 
