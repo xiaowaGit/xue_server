@@ -1,4 +1,5 @@
 import { MarySlotConfig, MarySlotSet } from "./table";
+import { random_arr, del_element_by_arr } from "../../../util/tool";
 
 //水果 代号
 enum Image {
@@ -31,6 +32,34 @@ let Image_Multiple = [
     [0,0,0,25,50,400],  // bouns 倍数
     [0,0,0,100,200,1750],  // scatter 倍数
     [0,0,0,0,0,0],  // Wild 倍数
+];
+
+/// 小玛丽游戏 水果倍数
+let Small_Image_Multiple = [
+    0,  // 炸弹,不中奖
+    20, // 香蕉
+    200,// 西瓜
+    70, // 芒果
+    100,// 葡萄
+    5,  // 菠萝
+    0,  // 铃铛
+    50, // 樱桃
+    0,  // bar
+    10, // Bouns 橘子
+    0,  // 7
+    0,  // wild
+];
+
+/// 小玛丽游戏 水果列表
+let Small_Image = [
+    Image.Image_Null,         //炸弹
+    Image.Image_Banana,       //香蕉
+    Image.Image_Watermelon,   //西瓜
+    Image.Image_Mango,        //芒果
+    Image.Image_Grape,        //葡萄
+    Image.Image_Pineapple,    //菠萝
+    Image.Image_Cherry,       //樱桃
+    Image.Image_Bonus,        //Bonus橘子
 ];
 
 /**
@@ -350,3 +379,150 @@ export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:nu
 }
 
 
+/////////////////////////////////small_mary_game//////////////////////////////////
+
+/**
+ * 小玛丽游戏返回格式
+ */
+export interface Small_Ret {
+    out_image:Image;
+    in_images:Image[];
+    multiple: number;
+    is_reward: boolean;
+    total_reward: number;
+}
+
+/**
+ * 构建一个炸弹奖
+ */
+function make_null(one_bet:number) {
+    let out_image:Image = Image.Image_Null;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    for (let i = 0; i < 4; i++) {
+        let rnd:number = Math.floor(Math.random() * small_image.length);
+        in_images.push(small_image[rnd]);
+    }
+    let small_ret:Small_Ret = {out_image,in_images,multiple:0,is_reward:true,total_reward:0};
+    return small_ret;
+}
+
+/**
+ * 构建一个0倍奖
+ */
+function make_0_reward(one_bet:number) {
+    let out_image:Image;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = random_arr(small_image);
+    out_image = small_image.pop();
+    for (let i = 0; i < 4; i++) {
+        let rnd:number = Math.floor(Math.random() * small_image.length);
+        in_images.push(small_image[rnd]);
+    }
+    let small_ret:Small_Ret = {out_image,in_images,multiple:0,is_reward:false,total_reward:0};
+    return small_ret;
+}
+
+/**
+ * 构建一个5倍奖
+ */
+function make_5_reward(one_bet:number) {
+    let out_image:Image = Image.Image_Pineapple;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 4; i++) {
+        let rnd:number = Math.floor(Math.random() * small_image.length);
+        in_images.push(small_image[rnd]);
+    }
+    let small_ret:Small_Ret = {out_image,in_images,multiple:5,is_reward:true,total_reward:one_bet*5};
+    return small_ret;
+}
+
+/**
+ * 构建一个10倍奖
+ */
+function make_10_reward(one_bet:number) {
+    
+}
+
+
+/**
+ * 构建一个20倍奖
+ */
+function make_20_reward(one_bet:number) {
+    
+}
+
+
+/**
+ * 构建一个25倍奖
+ */
+function make_25_reward(one_bet:number) {
+    
+}
+
+
+/**
+ * 构建一个30倍奖
+ */
+function make_30_reward(one_bet:number) {
+    
+}
+
+
+/**
+ * 构建一个40倍奖
+ */
+function make_40_reward(one_bet:number) {
+    
+}
+
+
+/**
+ * 构建一个50倍奖
+ */
+function make_50_reward(one_bet:number) {
+    
+}
+
+
+/**
+ * 构建一个70倍奖
+ */
+function make_70_reward(one_bet:number) {
+    
+}
+
+
+/**
+ * 构建一个90倍奖
+ */
+function make_90_reward(one_bet:number) {
+    
+}
+
+/**
+ * 生成小玛丽水果机奖励
+ */
+export function make_small_slot_reward(room_pool:number,one_bet:number,room_config:MarySlotConfig,small_game_reward_num:number) {
+    
+    ////  取出控制等级
+    let control_level:string = '1';
+    let Level_Range:number[][] = room_config.RoomControl.Level_Range;
+    for (let index = 0; index < Level_Range.length; index++) {
+        const level:number[] = Level_Range[index];
+        if (room_pool >= level[1] && room_pool < level[2]) {
+            control_level = "" + level[0];
+            break;
+        }
+    }
+
+    let control = room_config.ControlLevel[control_level];
+    let set_id:number = 2;
+    if (Math.random() * 100 < control[1]) set_id = control[0];
+
+    let set_info:MarySlotSet = room_config["Set_" + set_id];
+
+}

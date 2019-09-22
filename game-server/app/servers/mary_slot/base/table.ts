@@ -60,6 +60,7 @@ export class Mary_Slot_Table {
     private null_reward_num: number;
     private small_game_num: number;
     private free_game_num: number;
+    private small_game_reward_num: number;
     private xue_game: Connection; // 用户数据库连接
     private user: User_MOG;
     private globalChannelStatus: GlobalChannelServiceStatus;
@@ -78,6 +79,8 @@ export class Mary_Slot_Table {
         this.null_reward_num = 0; // 连续空奖次数
         this.small_game_num = 0; // 小游戏剩余次数
         this.free_game_num = 0; // 免费转次数
+
+        this.small_game_reward_num = 0; // 本次小游戏中奖次数
         
         const globalChannelStatus: GlobalChannelServiceStatus = this.app.get(GlobalChannelServiceStatus.PLUGIN_NAME);
         this.globalChannelStatus = globalChannelStatus;
@@ -135,6 +138,7 @@ export class Mary_Slot_Table {
         }
         this.small_game_num += reward.small_game_num;
         this.free_game_num += reward.free_game_num;
+        this.small_game_reward_num = 0;
         this.user.coin += reward.total_reward;
         await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'handsel_pool', -1*reward.pool_reward);
         await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'room_pool', -1*reward.line_reward);

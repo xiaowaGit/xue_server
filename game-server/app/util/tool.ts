@@ -33,7 +33,11 @@ export function is_enable_token(req:any) {
     return ok;
 }
 
-
+/**
+ * 用户是否在某个游戏中
+ * @param uid 
+ * @param globalChannelStatus 
+ */
 export async function inGame(uid:string,globalChannelStatus: GlobalChannelServiceStatus) {
     let channel_arr = [GAME_TYPE.MARY_SLOT];
     let members = await globalChannelStatus.getMembersByChannelName("connector",channel_arr);
@@ -56,4 +60,33 @@ export async function inGame(uid:string,globalChannelStatus: GlobalChannelServic
         }
     }
     return false;
+}
+
+
+/**
+ * 打乱数组
+ * @param arr 
+ */
+export function random_arr(arr:any[]) {
+    let ret_arr:any[] = [];
+    while (arr.length > 0) {
+        let rnd:number = Math.floor(Math.random() * arr.length);
+        ret_arr.push(arr[rnd]);
+        arr.splice(rnd,1);
+    }
+    return ret_arr;
+}
+
+/**
+ * 从数组中删除指定的元素
+ * @param arr 
+ * @param del_element 
+ */
+export function del_element_by_arr(arr:any[],del_element:any) {
+    let ret_arr:any[] = [];
+    for (let i = 0; i < arr.length; i++) {
+        const element = arr[i];
+        if (element != del_element) ret_arr.push(element);
+    }
+    return ret_arr;
 }
