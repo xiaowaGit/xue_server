@@ -2,6 +2,7 @@ import { Application } from "pinus";
 import { make_slot_reward, Ret } from "./make";
 import { getConnection, Connection } from "typeorm";
 import { User_MOG } from "../../../entity/User_MOG";
+import { GlobalChannelServiceStatus } from "pinus-global-channel-status";
 
 let xmcommon = require('xmcommon');
 let utils = xmcommon.utils;
@@ -49,6 +50,7 @@ export class Mary_Slot_Table {
     
     private static ROOM_LIST:Map<number,Mary_Slot_Table> = new Map<number,Mary_Slot_Table>();
     private static TABLE_ID:number = 0;
+    private static CHANNEL_NAME:string = "MARY_SLOT"; // 游戏通道
 
     private app: Application = null;
     private room_index:number = null;
@@ -59,6 +61,7 @@ export class Mary_Slot_Table {
     private free_game_num: number;
     private xue_game: Connection; // 用户数据库连接
     private user: User_MOG;
+    private globalChannelStatus: GlobalChannelServiceStatus;
 
     public static createTable(app: Application,room_index:number) {
         return new Mary_Slot_Table(app,room_index);
@@ -74,6 +77,9 @@ export class Mary_Slot_Table {
         this.null_reward_num = 0; // 连续空奖次数
         this.small_game_num = 0; // 小游戏剩余次数
         this.free_game_num = 0; // 免费转次数
+        
+        const globalChannelStatus: GlobalChannelServiceStatus = this.app.get(GlobalChannelServiceStatus.PLUGIN_NAME);
+        this.globalChannelStatus = globalChannelStatus;
         this.init_pool();
     }
 
@@ -120,7 +126,7 @@ export class Mary_Slot_Table {
         if(handsel_pool[0] != null) return {code:405,data:"奖池读取错误."};
         handsel_pool = ~~handsel_pool[1] || 0;
         let reward:Ret = make_slot_reward(room_pool,handsel_pool,one_bet,this.room_config,is_free,this.null_reward_num);
-        ///_____ 结算中奖金额TODO:
+        ///_____ 结算中奖金额TODO:-----> 结算完成
         if (reward.is_reward) {
             this.null_reward_num = 0;
         }else{
@@ -149,6 +155,9 @@ export class Mary_Slot_Table {
             return {code:403,data:'玩家不存在.'};
         }
         this.user = user;
+        let sids:string[] = await this.globalChannelStatus.getSidsByUid(""+uid);
+        let sid:string = sids[0];
+        await this.globalChannelStatus.add(""+uid,sid,Mary_Slot_Table.CHANNEL_NAME);
         return {code:0};
     }
 
@@ -161,6 +170,9 @@ export class Mary_Slot_Table {
         if(this.user && this.user.uid == uid) {
             this.user = null;
             Mary_Slot_Table.ROOM_LIST.delete(this.table_id);
+            let sids:string[] = await this.globalChannelStatus.getSidsByUid(""+uid);
+            let sid:string = sids[0];
+            await this.globalChannelStatus.leave(""+uid,sid,Mary_Slot_Table.CHANNEL_NAME);
             return {code:0};
         }else{
             return {code:404,data:"你不在该房间中"};

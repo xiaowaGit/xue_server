@@ -331,8 +331,8 @@ export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:nu
     let big_reward_probability:number = control[3][0];
     let big_reward_limit:number = control[3][1];
 
-    /// 随机函数 选择规则 待确认TODO:
-    let make:Function = row_make;
+    /// 随机函数 选择规则 待确认TODO:----> 图形随机
+    let make:Function = map_make;
 
     let small_reward:Ret = null;
     for (let i = 0; i < 50; i++) {
@@ -343,6 +343,7 @@ export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:nu
         if (sum(out.line_multiple) > big_reward_limit) {
             if (Math.random() * 100 < big_reward_probability) continue;
         }
+        if (out.line_reward > room_pool) continue;
         return out;
     }
     return small_reward;
