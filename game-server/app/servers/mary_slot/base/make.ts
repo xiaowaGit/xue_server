@@ -388,7 +388,7 @@ export interface Small_Ret {
     out_image:Image;
     in_images:Image[];
     multiple: number;
-    is_reward: boolean;
+    is_next: boolean;
     total_reward: number;
 }
 
@@ -403,7 +403,7 @@ function make_null(one_bet:number) {
         let rnd:number = Math.floor(Math.random() * small_image.length);
         in_images.push(small_image[rnd]);
     }
-    let small_ret:Small_Ret = {out_image,in_images,multiple:0,is_reward:true,total_reward:0};
+    let small_ret:Small_Ret = {out_image,in_images,multiple:0,is_next:true,total_reward:0};
     return small_ret;
 }
 
@@ -420,7 +420,7 @@ function make_0_reward(one_bet:number) {
         let rnd:number = Math.floor(Math.random() * small_image.length);
         in_images.push(small_image[rnd]);
     }
-    let small_ret:Small_Ret = {out_image,in_images,multiple:0,is_reward:false,total_reward:0};
+    let small_ret:Small_Ret = {out_image,in_images,multiple:0,is_next:false,total_reward:0};
     return small_ret;
 }
 
@@ -432,11 +432,13 @@ function make_5_reward(one_bet:number) {
     let small_image:Image[] = [...Small_Image];
     let in_images:Image[] = [];
     small_image = del_element_by_arr(small_image,out_image);
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
         let rnd:number = Math.floor(Math.random() * small_image.length);
         in_images.push(small_image[rnd]);
     }
-    let small_ret:Small_Ret = {out_image,in_images,multiple:5,is_reward:true,total_reward:one_bet*5};
+    in_images.push(Image.Image_Pineapple);
+    in_images = random_arr(in_images);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:5,is_next:false,total_reward:one_bet*5};
     return small_ret;
 }
 
@@ -444,7 +446,18 @@ function make_5_reward(one_bet:number) {
  * 构建一个10倍奖
  */
 function make_10_reward(one_bet:number) {
-    
+    let out_image:Image = Image.Image_Bonus;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        let rnd:number = Math.floor(Math.random() * small_image.length);
+        in_images.push(small_image[rnd]);
+    }
+    in_images.push(Image.Image_Bonus);
+    in_images = random_arr(in_images);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:10,is_next:false,total_reward:one_bet*10};
+    return small_ret;
 }
 
 
@@ -453,6 +466,18 @@ function make_10_reward(one_bet:number) {
  */
 function make_20_reward(one_bet:number) {
     
+    let out_image:Image = Image.Image_Banana;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        let rnd:number = Math.floor(Math.random() * small_image.length);
+        in_images.push(small_image[rnd]);
+    }
+    in_images.push(Image.Image_Banana);
+    in_images = random_arr(in_images);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:20,is_next:false,total_reward:one_bet*20};
+    return small_ret;
 }
 
 
@@ -460,7 +485,18 @@ function make_20_reward(one_bet:number) {
  * 构建一个25倍奖
  */
 function make_25_reward(one_bet:number) {
-    
+    let out_image:Image = Image.Image_Pineapple;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        in_images.push(Image.Image_Pineapple);
+    }
+    let rnd:number = Math.floor(Math.random() * small_image.length);
+    if (Math.random() < 0.5) in_images.push(small_image[rnd]);
+    else in_images.unshift(small_image[rnd]);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:25,is_next:false,total_reward:one_bet*25};
+    return small_ret;
 }
 
 
@@ -468,7 +504,18 @@ function make_25_reward(one_bet:number) {
  * 构建一个30倍奖
  */
 function make_30_reward(one_bet:number) {
-    
+    let out_image:Image = Image.Image_Bonus;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        in_images.push(Image.Image_Bonus);
+    }
+    let rnd:number = Math.floor(Math.random() * small_image.length);
+    if (Math.random() < 0.5) in_images.push(small_image[rnd]);
+    else in_images.unshift(small_image[rnd]);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:30,is_next:false,total_reward:one_bet*30};
+    return small_ret;
 }
 
 
@@ -477,6 +524,18 @@ function make_30_reward(one_bet:number) {
  */
 function make_40_reward(one_bet:number) {
     
+    let out_image:Image = Image.Image_Banana;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        in_images.push(Image.Image_Banana);
+    }
+    let rnd:number = Math.floor(Math.random() * small_image.length);
+    if (Math.random() < 0.5) in_images.push(small_image[rnd]);
+    else in_images.unshift(small_image[rnd]);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:40,is_next:false,total_reward:one_bet*40};
+    return small_ret;
 }
 
 
@@ -485,6 +544,18 @@ function make_40_reward(one_bet:number) {
  */
 function make_50_reward(one_bet:number) {
     
+    let out_image:Image = Image.Image_Cherry;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        let rnd:number = Math.floor(Math.random() * small_image.length);
+        in_images.push(small_image[rnd]);
+    }
+    in_images.push(Image.Image_Cherry);
+    in_images = random_arr(in_images);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:50,is_next:false,total_reward:one_bet*50};
+    return small_ret;
 }
 
 
@@ -493,6 +564,18 @@ function make_50_reward(one_bet:number) {
  */
 function make_70_reward(one_bet:number) {
     
+    let out_image:Image = Image.Image_Mango;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        let rnd:number = Math.floor(Math.random() * small_image.length);
+        in_images.push(small_image[rnd]);
+    }
+    in_images.push(Image.Image_Mango);
+    in_images = random_arr(in_images);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:70,is_next:false,total_reward:one_bet*70};
+    return small_ret;
 }
 
 
@@ -501,6 +584,18 @@ function make_70_reward(one_bet:number) {
  */
 function make_90_reward(one_bet:number) {
     
+    let out_image:Image = Image.Image_Mango;
+    let small_image:Image[] = [...Small_Image];
+    let in_images:Image[] = [];
+    small_image = del_element_by_arr(small_image,out_image);
+    for (let i = 0; i < 3; i++) {
+        in_images.push(Image.Image_Mango);
+    }
+    let rnd:number = Math.floor(Math.random() * small_image.length);
+    if (Math.random() < 0.5) in_images.push(small_image[rnd]);
+    else in_images.unshift(small_image[rnd]);
+    let small_ret:Small_Ret = {out_image,in_images,multiple:90,is_next:false,total_reward:one_bet*90};
+    return small_ret;
 }
 
 /**
@@ -524,5 +619,5 @@ export function make_small_slot_reward(room_pool:number,one_bet:number,room_conf
     if (Math.random() * 100 < control[1]) set_id = control[0];
 
     let set_info:MarySlotSet = room_config["Set_" + set_id];
-
+    
 }
