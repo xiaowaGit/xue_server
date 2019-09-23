@@ -64,6 +64,14 @@ export class Mary_Slot_Table {
     private user: User_MOG;
     private globalChannelStatus: GlobalChannelServiceStatus;
 
+    public static findTable(uid:number) { // 发现某个用户 所在的房间
+        let table:Mary_Slot_Table = null;
+        Mary_Slot_Table.ROOM_LIST.forEach((value,key,map)=>{
+            if (value.user && value.user.uid == uid) table = value;
+        });
+        return table;
+    }
+
     public static createTable(app: Application,room_index:number) {
         return new Mary_Slot_Table(app,room_index);
     }

@@ -1,4 +1,5 @@
 import {Application, RemoterClass, FrontendSession, BackendSession} from 'pinus';
+import { Mary_Slot_Table } from '../base/table';
 
 export default function (app: Application) {
     return new MarySlotRemoter(app);
@@ -25,7 +26,11 @@ export class MarySlotRemoter {
      * @param uid
      */
     public async outLine(uid:string) {
-        ////TODO:
+        ////TODO: ---- > 下线 退出房间
+        let table:Mary_Slot_Table = Mary_Slot_Table.findTable(~~uid);
+        if (table) {
+            await table.leave_game(~~uid);
+        }
         return true;
     }
 
