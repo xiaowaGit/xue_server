@@ -1,5 +1,5 @@
 import { Application } from "pinus";
-import { make_slot_reward, Ret } from "./make";
+import { make_slot_reward, Ret, Small_Ret, make_small_slot_reward } from "./make";
 import { getConnection, Connection } from "typeorm";
 import { User_MOG } from "../../../entity/User_MOG";
 import { GlobalChannelServiceStatus } from "pinus-global-channel-status";
@@ -150,6 +150,35 @@ export class Mary_Slot_Table {
         return reward;
     }
 
+    
+    /**
+     *  下注摇奖
+     */
+    async small_put_bet() {
+        if (this.user == null) return {code:402,data:"用户未进入房间."};
+        let one_bet:number = this.room_config.Bet[0];
+        if (this.small_game_num <= 0) return {code:403,data:"小游戏次数不足."};
+        
+        let REDIS_HGET = global['REDIS_HGET'];
+        let REDIS_HINCRBY = global['REDIS_HINCRBY'];
+        let room_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'room_pool');
+        if(room_pool[0] != null) return {code:404,data:"奖池读取错误."};
+        room_pool = ~~room_pool[1] || 0;
+        let reward:Small_Ret = make_small_slot_reward(room_pool,one_bet,this.room_config,this.small_game_reward_num);
+        if (reward.is_next) {
+            this.small_game_num --;
+            this.small_game_reward_num = 0;
+        }else if (reward.multiple != 0) {
+            this.small_game_reward_num ++;
+        }
+        this.user.coin += reward.total_reward;
+        await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'room_pool', -1*reward.total_reward);
+        await this.xue_game.manager.save(this.user);
+
+        ///// 发送给 客户端 综合数据
+        reward["small_game_num"] = this.small_game_num;
+        return reward;
+    }
     /**
      * 玩家进入游戏
      * @param uid 

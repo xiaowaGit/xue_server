@@ -619,5 +619,43 @@ export function make_small_slot_reward(room_pool:number,one_bet:number,room_conf
     if (Math.random() * 100 < control[1]) set_id = control[0];
 
     let set_info:MarySlotSet = room_config["Set_" + set_id];
-    
+
+    let probs:number[] = set_info.Game.Probs;
+    let probability:number = small_game_reward_num >= probs.length ? probs[probs.length-1] : probs[small_game_reward_num];
+    if (Math.random() * 100 < probability) { // 给一个炸弹
+        return make_null(one_bet);
+    }else{ // 要给一个随机奖
+        let reward_config:number[][] = set_info.Game.Reward;
+        let reward_probability:number[] = [];
+        let reward_exp:number[] = [0,5,10,20,25,30,40,50,70,90];
+
+        let max_num:number = 0;
+        for (let i = 0; i < 10; i++) {
+            const element = reward_config[i];
+            max_num += element[0];
+            reward_probability.push(max_num);
+        }
+
+        //// 根据概率 生成 对应倍数奖励
+        let rnd:number = Math.random() * max_num;
+        let exp:number = 0;
+        for (let i = 0; i < reward_probability.length; i++) {
+            const val = reward_probability[i];
+            if (rnd <= val) {
+                exp = reward_exp[i];
+                break;
+            }
+        }
+
+        let make:Function;
+        let make_list:Function[] = [make_0_reward,make_5_reward,make_10_reward,make_20_reward,make_25_reward,make_30_reward,make_40_reward,make_50_reward,make_70_reward,make_90_reward];
+        make = make_list[exp];
+
+        let ret:Small_Ret = make(one_bet);
+        if (room_pool < ret.total_reward) {
+            return make_null(one_bet);
+        }else{
+            return ret;
+        }
+    }
 }
