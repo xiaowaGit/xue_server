@@ -5,9 +5,8 @@ import { User_MOG } from "../../../entity/User_MOG";
 import { GlobalChannelServiceStatus } from "pinus-global-channel-status";
 import { GAME_TYPE } from "../../../util/enum";
 import { inGame } from "../../../util/tool";
+import { utils } from 'xmcommon'
 
-let xmcommon = require('xmcommon');
-let utils = xmcommon.utils;
 /**
  * 游戏玩法配置
  */
@@ -123,10 +122,10 @@ export class Mary_Slot_Table {
             await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'handsel_pool', handsel_water);
             await utils.WaitFunctionEx(REDIS_HINCRBY, 'Mary_Slot', 'room_pool', add_pool);
         }
-        let room_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'room_pool');
+        let room_pool:any = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'room_pool');
         if(room_pool[0] != null) return {code:404,data:"奖池读取错误."};
         room_pool = ~~room_pool[1] || 0;
-        let handsel_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'handsel_pool');
+        let handsel_pool:any = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'handsel_pool');
         if(handsel_pool[0] != null) return {code:405,data:"奖池读取错误."};
         handsel_pool = ~~handsel_pool[1] || 0;
         let reward:Ret = make_slot_reward(room_pool,handsel_pool,one_bet,this.room_config,is_free,this.null_reward_num);
@@ -161,7 +160,7 @@ export class Mary_Slot_Table {
         
         let REDIS_HGET = global['REDIS_HGET'];
         let REDIS_HINCRBY = global['REDIS_HINCRBY'];
-        let room_pool = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'room_pool');
+        let room_pool:any = await utils.WaitFunctionEx(REDIS_HGET, 'Mary_Slot', 'room_pool');
         if(room_pool[0] != null) return {code:404,data:"奖池读取错误."};
         room_pool = ~~room_pool[1] || 0;
         let reward:Small_Ret = make_small_slot_reward(room_pool,one_bet,this.room_config,this.small_game_reward_num);
