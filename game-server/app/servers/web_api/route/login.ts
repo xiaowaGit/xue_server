@@ -27,6 +27,9 @@ module.exports = function(app, http, plugin) {
 		http.post('/register',async function(req, res, next) {
 			// console.log("req.body:",req.body);
 			let {account,password,name,sex} = req.body;
+			if (account == null || password == null || name == null || sex == null) {
+				return s_http(402,'注册失败,参数错误',res);
+			}
 			async function new_account():Promise<Account_MOG> {
 				let uid:number = get_random_int(100000,999999);
 				// let accountRepository = xue_game.getRepository(Account_MOG);
