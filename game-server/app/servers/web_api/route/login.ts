@@ -5,7 +5,7 @@ import { getConnection } from 'typeorm';
 import { Account_MOG } from '../../../entity/Account_MOG';
 
 import { utils } from 'xmcommon';
-import { get_random_int, s_http, is_enable_token } from '../../../util/tool';
+import { get_random_int, s_http, is_enable_token, analysis_http } from '../../../util/tool';
 import { NewToken } from '../../../util/token';
 
 module.exports = function(app, http, plugin) {
@@ -20,13 +20,23 @@ module.exports = function(app, http, plugin) {
 		});
 	} else {
 
+		//设置跨域访问
+		http.all('*', function(req, res, next) {	
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "Content-Type");
+			res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+			res.header("X-Powered-By",' 3.2.1')
+			res.header("Content-Type", "application/json;charset=utf-8");
+			next();
+		  });
+
 		http.get('/testHttp', function(req, res, next) {
 			return s_http(0,"http success",res);
 		});
 
 		http.post('/register',async function(req, res, next) {
 			// console.log("req.body:",req.body);
-			let {account,password,name,sex} = req.body;
+			let {account,password,name,sex} = analysis_http(req.body);
 			if (account == null || password == null || name == null || sex == null) {
 				return s_http(402,'注册失败,参数错误',res);
 			}
@@ -62,7 +72,7 @@ module.exports = function(app, http, plugin) {
 
 		http.post('/login',async function(req, res, next) {
 			console.log("req.body:",req.body);
-			let {account,password} = req.body;
+			let {account,password} = analysis_http(req.body);
 			let account_m = await xue_game.manager.findOne(Account_MOG,{account});
 			if (account_m == null) {
 				return s_http(403,'账号不存在.',res);
@@ -78,7 +88,7 @@ module.exports = function(app, http, plugin) {
 		http.post('/get_info',async function(req, res, next) {
 			console.log("req.body:",req.body);
 			if (is_enable_token(req) == false) return s_http(402,'token校验不通过.',res);
-			let {uid} = req.body;
+			let {uid} = analysis_http(req.body);
 			let user = await xue_game.manager.findOne(User_MOG,{uid});
 			if (user == null) {
 				return s_http(403,'玩家不存在.',res);

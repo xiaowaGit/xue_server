@@ -18,6 +18,27 @@ export function unbase64(str) {
     return new Buffer(str, 'base64').toString();
 }
 
+/**
+ * 解析http 参数
+ * @param body 
+ */
+export function analysis_http(body:any) {
+    let param_num:number = 0;
+    let new_body:string = null;
+    for (const key in body) {
+        if (body.hasOwnProperty(key)) {
+            const element = body[key];
+            if (element == "") new_body = key;
+            param_num ++;
+        }
+    }
+    if (param_num == 1 && new_body) {
+        return JSON.parse(new_body);
+    }else{
+        return body;
+    }
+}
+
 export function s_http(code:number,data:any,res:any) {
     res.send(JSON.stringify({code,data}));
 }
@@ -27,7 +48,7 @@ export function s_http(code:number,data:any,res:any) {
  * @param req 
  */
 export function is_enable_token(req:any) {
-    let {uid,token} = req.body;
+    let {uid,token} = analysis_http(req.body);
     if (!uid || !token) return false;
     let {ok} = VerifyToken(uid, token);
     return ok;
