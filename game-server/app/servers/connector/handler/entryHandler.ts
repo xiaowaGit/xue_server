@@ -26,7 +26,8 @@ export class Handler {
         let uid:string = "" + msg.uid;
         let sessionService = self.app.get('sessionService');
 
-        if (is_enable_token(msg) == false) {
+        let req = {body:msg};
+        if (is_enable_token(req) == false) {
             return {
                 code: 501,
                 error: true
