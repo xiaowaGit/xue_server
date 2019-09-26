@@ -104,7 +104,7 @@ class Lifecycle implements ILifeCycle {
                 global['REDIS_HGET'] = client.hget.bind(client);
                 global['REDIS_HGETALL'] = client.hgetall.bind(client);
                 global['REDIS_HINCRBY'] = client.hincrby.bind(client);
-                global['REDIS_HINCRBYFLOAT'] = client.hincrbybyfloat.bind(client);
+                global['REDIS_HINCRBYFLOAT'] = client.hincrbyfloat.bind(client);
                 global['REDIS_HKEYS'] = client.hkeys.bind(client);
                 global['REDIS_HLEN'] = client.hlen.bind(client);
                 global['REDIS_HMGET'] = client.hmget.bind(client);
