@@ -121,7 +121,7 @@ class Lifecycle implements ILifeCycle {
     }
 
     afterStartAll(app:Application):void {
-        console.log("------------------初始化web_api-------------------");
+        console.log("------------------初始化mary_slot_api-------------------");
 	    app.loadConfig('HappyFruit_1', path.join(app.getBase(), 'config/mary_slot/HappyFruit_1.json'));
 	    app.loadConfig('HappyFruit_2', path.join(app.getBase(), 'config/mary_slot/HappyFruit_2.json'));
 	    app.loadConfig('HappyFruit_3', path.join(app.getBase(), 'config/mary_slot/HappyFruit_3.json'));
