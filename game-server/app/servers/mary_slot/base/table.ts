@@ -91,7 +91,7 @@ export class Mary_Slot_Table {
         
         const globalChannelStatus: GlobalChannelServiceStatus = this.app.get(GlobalChannelServiceStatus.PLUGIN_NAME);
         this.globalChannelStatus = globalChannelStatus;
-        this.init_pool();
+        
     }
 
     /**
@@ -192,6 +192,7 @@ export class Mary_Slot_Table {
      * @param uid 
      */
     async enter_game(uid:number) {
+        await this.init_pool();
         let user = await this.xue_game.manager.findOne(User_MOG,{uid});
         if (user == null) {
             return {code:403,data:'玩家不存在.'};

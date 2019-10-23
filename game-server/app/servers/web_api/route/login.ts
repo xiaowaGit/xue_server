@@ -89,6 +89,7 @@ module.exports = function(app, http, plugin) {
 			console.log("req.body:",req.body);
 			if (is_enable_token(req) == false) return s_http(402,'token校验不通过.',res);
 			let {uid} = analysis_http(req.body);
+			uid = ~~uid;
 			let user = await xue_game.manager.findOne(User_MOG,{uid});
 			if (user == null) {
 				return s_http(403,'玩家不存在.',res);
