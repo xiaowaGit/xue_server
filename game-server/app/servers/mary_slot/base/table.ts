@@ -197,7 +197,8 @@ export class Mary_Slot_Table {
         if (user == null) {
             return {code:403,data:'玩家不存在.'};
         }
-        if (inGame(""+uid,this.globalChannelStatus)) {
+        let in_game = await inGame(""+uid,this.globalChannelStatus)
+        if (in_game) {
             return {code:404,data:'你已经在其他游戏中，不能进入此游戏.'};
         }
         this.user = user;
