@@ -167,6 +167,7 @@ function check_line_element(ret:DataRet,line:Line):number {
             break;
         }else if (element != element_type && element_type == Image.Image_Null) {
             element_type = element;
+            num++;
             if (element_type == Image.Image_Bonus || element_type == Image.Image_Seven)num = 0;
         }else if (element == element_type) {
             num ++;
