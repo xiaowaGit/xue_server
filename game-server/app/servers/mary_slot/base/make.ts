@@ -296,11 +296,11 @@ function check_scatter(ret:DataRet,JackPot_Reward:number[]):number {
  * 检查中奖情况
  * @param ret 
  */
-function check_make_ret(ret:[number[],number[],number[],number[],number[]],handsel_pool:number,one_bet:number,JackPot_Reward:number[]) {
+function check_make_ret(ret:[number[],number[],number[],number[],number[]],handsel_pool:number,one_bet:number,JackPot_Reward:number[],max_bet:number) {
     let small_game_num:number = check_wild(ret);
     let line_multiple:number[] = check_line_multiple(ret);
     let free_game_num:number = check_bonus(ret);
-    let pool_multiple:number = check_scatter(ret,JackPot_Reward);
+    let pool_multiple:number = one_bet == max_bet ? check_scatter(ret,JackPot_Reward) : 0;
     let is_reward = false;
     if (small_game_num != 0) is_reward = true;
     if (free_game_num != 0) is_reward = true;
@@ -336,6 +336,9 @@ function sum(arr) {
  */
 export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:number,room_config:MarySlotConfig,is_free:boolean,null_reward_num:number) {
 
+    //// 取出最大押注
+    let max_bet:number = room_config.Bet[room_config.Bet.length-1];
+
     ////  取出控制等级
     let control_level:string = '1';
     let Level_Range:number[][] = room_config.RoomControl.Level_Range;
@@ -369,7 +372,7 @@ export function make_slot_reward(room_pool:number,handsel_pool:number,one_bet:nu
     let small_reward:Ret = null;
     for (let i = 0; i < 50; i++) {
         let ret:[number[],number[],number[],number[],number[]] = make(data_input);
-        let out:Ret = check_make_ret(ret,handsel_pool,one_bet,JackPot_Reward);
+        let out:Ret = check_make_ret(ret,handsel_pool,one_bet,JackPot_Reward,max_bet);
         if (small_reward == null || small_reward.total_reward > out.total_reward) small_reward = out;
         if (is_reward && out.is_reward == false) continue;
         if (sum(out.line_multiple) > big_reward_limit) {
