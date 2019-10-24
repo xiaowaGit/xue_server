@@ -329,7 +329,7 @@ function check_make_ret(ret:[number[],number[],number[],number[],number[]],hands
 
 function sum(arr) {
     return eval(arr.join("+"));
-};
+}
 
 /**
  * 生成水果机奖励
