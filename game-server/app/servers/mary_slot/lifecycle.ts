@@ -129,6 +129,6 @@ class Lifecycle implements ILifeCycle {
     }
 
     beforeShutdown(app:Application):void {
-        console.log("------------------clear web_api-------------------");
+        console.log("------------------clear mary_slot_api-------------------");
     }
 }
