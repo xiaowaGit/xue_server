@@ -45,7 +45,7 @@ app.configure('production|development', 'connector', function () {
         host     : '127.0.0.1',
         password : null,
         port     : 6379,
-        db       : 9,      // optinal, from 0 to 15 with default redis configure
+        db       : 15,      // optinal, from 0 to 15 with default redis configure
         // optional
         cleanOnStartUp:app.getServerType() == 'connector',
     });
