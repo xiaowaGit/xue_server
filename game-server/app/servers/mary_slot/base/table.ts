@@ -185,6 +185,7 @@ export class Mary_Slot_Table {
 
         ///// 发送给 客户端 综合数据
         reward["small_game_num"] = this.small_game_num;
+        reward["current_coin"] = this.user.coin;
         return reward;
     }
     /**

@@ -648,14 +648,15 @@ export function make_small_slot_reward(room_pool:number,one_bet:number,room_conf
         for (let i = 0; i < reward_probability.length; i++) {
             const val = reward_probability[i];
             if (rnd <= val) {
-                exp = reward_exp[i];
+                // exp = reward_exp[i];
+                exp = i;
                 break;
             }
         }
 
         let make:Function;
         let make_list:Function[] = [make_0_reward,make_5_reward,make_10_reward,make_20_reward,make_25_reward,make_30_reward,make_40_reward,make_50_reward,make_70_reward,make_90_reward];
-        make = make_list[exp];
+        make = exp >= make_list.length ? make_90_reward : make_list[exp];
 
         let ret:Small_Ret = make(one_bet);
         if (room_pool < ret.total_reward) {
