@@ -77,6 +77,7 @@ export class Handler {
                         const uids = element[channel_name];
                         if (uids.indexOf(session.uid) != -1) { ///// 通知游戏 该用户掉线
                             await this.app.rpc.mary_slot.marySlotRemoter.outLine.route(session)(session.uid);
+                            // await this.app.rpc.mary_slot.marySlotRemoter.outLine.route(null)(session.uid);
                         }
                     }
                 }
