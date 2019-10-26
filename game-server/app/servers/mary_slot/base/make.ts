@@ -93,7 +93,6 @@ export interface Ret {
     line_reward: number;
     pool_reward: number;
     total_reward: number;
-    current_coin: number;
 }
 
 /// 线集合
@@ -317,8 +316,7 @@ function check_make_ret(ret:[number[],number[],number[],number[],number[]],hands
     }
     let pool_reward:number = pool_multiple * handsel_pool;
     let total_reward:number = line_reward + pool_reward;
-    let current_coin:number = 0;
-    let _ret:Ret = {ret,small_game_num,line_multiple,free_game_num,pool_multiple,is_reward,line_reward,pool_reward,total_reward,current_coin};
+    let _ret:Ret = {ret,small_game_num,line_multiple,free_game_num,pool_multiple,is_reward,line_reward,pool_reward,total_reward};
     return _ret;
 }
 
