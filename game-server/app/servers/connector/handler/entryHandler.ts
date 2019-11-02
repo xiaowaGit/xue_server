@@ -47,6 +47,10 @@ export class Handler {
         globalChannelStatus.addStatus(session.uid, this.app.getServerId());
         session.on('closed', this.onUserLeave.bind(this));
 
+        ////// 加入 全局的游戏通道
+        let sids:string[] = await globalChannelStatus.getSidsByUid(""+uid);
+        let sid:string = sids[0];
+        await globalChannelStatus.add(""+uid,sid,GAME_TYPE.GLOBAL_CHANNEL);
         return {code:0};
     }
     
@@ -83,6 +87,12 @@ export class Handler {
                 }
             }
         }
+        
+        ////// 离开 全局的游戏通道
+        let sids:string[] = await globalChannelStatus.getSidsByUid(session.uid);
+        let sid:string = sids[0];
+        await globalChannelStatus.leave(""+session.uid,sid,GAME_TYPE.GLOBAL_CHANNEL);
+
         /// 下线
         globalChannelStatus.leaveStatus(session.uid, this.app.getServerId());
     }

@@ -209,7 +209,7 @@ export class Mary_Slot_Table {
         await this.globalChannelStatus.add(""+uid,sid,GAME_TYPE.MARY_SLOT);
 
         //// ____T: 测试通道 代码
-        await this.globalChannelStatus.pushMessageByChannelName('connector','onNotice',{msg:"欢迎:"+uid+" 进入游戏"},GAME_TYPE.MARY_SLOT);
+        await this.globalChannelStatus.pushMessageByChannelName('connector','onNotice',{msg:"欢迎:"+uid+" 进入玛丽水果机游戏"},GAME_TYPE.GLOBAL_CHANNEL);
         // await this.globalChannelStatus.pushMessageByUids([""+uid],'onNotice',{msg:"欢迎进入开心水果机"});
         return {code:0};
     }

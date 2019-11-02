@@ -1,4 +1,5 @@
 
 export enum GAME_TYPE {
+    GLOBAL_CHANNEL = "GLOBAL_CHANNEL",
     MARY_SLOT = "MARY_SLOT",
 }
